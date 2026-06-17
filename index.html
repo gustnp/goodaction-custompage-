@@ -3,123 +3,186 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>해피빈 캠페인 페이지 · 입력형 와이어프레임</title>
+<title>해피빈 캠페인 페이지 · 입력형 템플릿</title>
 <style>
   :root{
-    --paper:#f4f4f4; --block:#fff; --block-alt:#fafafa;
-    --line:#d6d6d6; --line-strong:#b8b8b8;
-    --skeleton:#dcdcdc; --skeleton-dark:#c7c7c7;
-    --ink:#9a9a9a; --ink-faint:#bdbdbd; --content:#3a3a3a;
-    --anno:#3f6fb0; --anno-bg:#eef3fb; --anno-line:#c3d3ec;
-    --edit:#9bbbe0; --w:960px;
+    --green:#16c265; --green-deep:#0fa653;
+    --sky:#eaf4fd; --sky-deep:#d6ebfb; --mint:#eaf7ef;
+    --ink:#2c2f33; --body:#5b6168; --muted:#9aa0a6;
+    --card:#ffffff; --card-line:#ecEEF0; --skeleton:#e3e6ea; --skeleton-d:#d2d6db;
+    --anno:#525a66; --anno-bg:#f1f3f5; --anno-line:#e3e6ea; --anno-ink:#5a626d;
+    --edit-empty:#eef1f4; --edit-focus:#9fdcbc;
+    --w:960px;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
-  body{margin:0;background:var(--paper);
+  body{margin:0;background:#fff;color:var(--body);
     font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-    color:var(--ink);-webkit-font-smoothing:antialiased;padding-bottom:60px;}
-  .wrap{max-width:var(--w);margin:0 auto;padding:0 16px;}
+    -webkit-font-smoothing:antialiased;}
+  .container{max-width:var(--w);margin:0 auto;padding:0 24px;}
 
-  /* ---------- 편집 가능한 텍스트 슬롯 ---------- */
-  .edit{outline:none;border-radius:5px;padding:2px 6px;min-width:40px;
-    transition:background .12s,box-shadow .12s;cursor:text;white-space:pre-wrap;color:var(--content);}
-  .edit:hover{background:#eef0f2;}
-  .edit:focus{background:#fff;box-shadow:0 0 0 2px var(--edit);}
-  .edit.is-empty{background:#ececec;color:var(--ink-faint);}
+  /* ---------- 밴드(전체폭 섹션) ---------- */
+  .band{padding:clamp(52px,7vw,84px) 0;}
+  .band.sky{background:linear-gradient(180deg,var(--sky),#fff);}
+  .band.mint{background:var(--mint);}
+  .band.skyflat{background:var(--sky);}
+  .band.tight{padding:clamp(28px,4vw,44px) 0;}
+
+  /* ---------- 타이포 ---------- */
+  .eyebrow{display:inline-block;background:#e9f8ef;color:var(--green-deep);
+    font-size:13px;font-weight:700;padding:6px 14px;border-radius:20px;}
+  .h1{font-size:clamp(28px,4.6vw,42px);font-weight:800;line-height:1.32;color:var(--ink);}
+  .h2{font-size:clamp(22px,3.4vw,30px);font-weight:800;line-height:1.34;color:var(--ink);}
+  .lead{font-size:clamp(15px,1.8vw,17px);line-height:1.65;color:var(--body);}
+  .center{text-align:center;}
+  .stack-sm > *+*{margin-top:12px;}
+  .stack-md > *+*{margin-top:20px;}
+
+  /* ---------- 편집 슬롯 ---------- */
+  .edit{outline:none;border-radius:8px;padding:2px 8px;white-space:pre-wrap;cursor:text;
+    transition:background .12s,box-shadow .12s;}
+  .edit:hover{background:rgba(22,194,101,.06);}
+  .edit:focus{background:#fff;box-shadow:0 0 0 2px var(--edit-focus);}
+  .edit.is-empty{background:var(--edit-empty);color:var(--muted);font-weight:500;}
   .edit.is-empty:before{content:attr(data-ph);}
-  .edit.title{font-size:30px;font-weight:800;line-height:1.3;}
-  .edit.title.lg{font-size:36px;}
-  .edit.sec{font-size:24px;font-weight:800;line-height:1.3;}
-  .edit.sub{font-size:15px;font-weight:500;}
-  .edit.body{font-size:14px;line-height:1.65;}
-  .edit.label{font-size:12px;font-weight:600;display:inline-block;}
-  .edit.num{font-size:34px;font-weight:800;color:#444;}
-  .edit.cta{font-size:14px;font-weight:700;color:#fff;}
-  .edit.cta.is-empty{background:transparent;color:#f0f0f0;}
+  .editblock{display:block;}
+  .editline{display:inline-block;}
 
   /* ---------- 이미지 슬롯 ---------- */
-  .img-slot{position:relative;border:2px dashed var(--line-strong);border-radius:8px;
-    background:repeating-linear-gradient(45deg,#f0f0f0,#f0f0f0 10px,#f6f6f6 10px,#f6f6f6 20px);
-    background-size:cover;background-position:center;background-repeat:no-repeat;
+  .img-slot{position:relative;border:2px dashed #c4ccd2;border-radius:14px;
+    background:#f6f8fa;background-size:cover;background-position:center;background-repeat:no-repeat;
     display:flex;align-items:center;justify-content:center;text-align:center;
-    color:var(--ink-faint);font-size:13px;min-height:120px;padding:12px;cursor:pointer;}
-  .img-slot.filled{border-style:solid;border-color:var(--line);color:transparent;}
-  .img-slot:hover{border-color:var(--edit);}
-  .img-slot .rm{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;
+    color:var(--muted);font-size:13px;min-height:120px;padding:16px;cursor:pointer;}
+  .img-slot.filled{border-style:solid;border-color:var(--card-line);color:transparent;}
+  .img-slot:hover{border-color:var(--green);}
+  .img-slot .rm{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;
     background:rgba(0,0,0,.55);color:#fff;border:0;cursor:pointer;display:none;
     align-items:center;justify-content:center;font-size:13px;line-height:1;}
   .img-slot.filled .rm{display:flex;}
 
-  /* ---------- 블록 ---------- */
-  .block-inner{background:var(--block);border:1px solid var(--line);border-radius:10px;
-    padding:34px 30px;margin:0 16px;}
-  .block.alt .block-inner{background:var(--block-alt);}
-  .block + .block{margin-top:14px;}
-  .bar{background:var(--skeleton);border-radius:4px;height:14px;margin:8px 0;}
-  .bar.w90{width:90%;} .bar.w80{width:80%;} .bar.w60{width:60%;} .bar.w40{width:40%;} .bar.w30{width:30%;}
-  .pill{display:inline-block;height:30px;min-width:54px;background:var(--skeleton);border-radius:16px;}
-  .icon{width:48px;height:48px;border-radius:50%;background:var(--skeleton-dark);margin:0 auto;}
-  .icon.sq{border-radius:10px;}
-  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;min-width:160px;
-    background:var(--skeleton-dark);border-radius:24px;padding:0 22px;}
-  .center{text-align:center;} .mt{margin-top:16px;} .mb{margin-bottom:16px;}
-  .row{display:flex;gap:16px;align-items:flex-start;}
-  .col{flex:1;min-width:0;}
-  .cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-  .answer{border:1px solid var(--line);border-radius:10px;background:#fff;padding:16px;
-    display:flex;align-items:center;gap:14px;margin-bottom:12px;}
-  .answer .icon{flex:none;width:40px;height:40px;}
-  .bubble{border:1px solid var(--line);border-radius:14px;background:#fff;padding:18px 20px;
-    max-width:460px;margin:0 auto;}
-  .chan-card{border:1px solid var(--line);border-radius:12px;background:#fff;padding:22px 16px;text-align:center;}
-  .comment{display:flex;gap:12px;padding:14px 0;border-top:1px solid #ececec;}
-  .comment .icon{flex:none;width:34px;height:34px;}
-  .num-pill{display:inline-block;border:1px solid var(--line-strong);border-radius:8px;
-    padding:14px 22px;font-size:13px;color:var(--ink-faint);background:#fff;}
+  /* ---------- 컴포넌트 ---------- */
+  .pill-btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;
+    padding:0 34px;background:var(--green);color:#fff;border-radius:28px;font-weight:700;
+    font-size:16px;box-shadow:0 6px 14px rgba(22,194,101,.28);}
+  .pill-btn.ghost{background:#fff;color:var(--green-deep);border:1.5px solid var(--green);box-shadow:none;
+    min-height:40px;padding:0 22px;font-size:14px;}
+  .pill-btn .edit.is-empty{background:transparent;color:rgba(255,255,255,.85);}
+  .pill-btn.ghost .edit.is-empty{background:transparent;color:var(--green-deep);}
+
+  .bubble{position:relative;display:inline-block;background:#fff;border:1px solid var(--card-line);
+    border-radius:18px;padding:22px 28px;max-width:520px;box-shadow:0 8px 20px rgba(0,0,0,.05);}
+  .bubble:after{content:"";position:absolute;left:50%;bottom:-11px;transform:translateX(-50%) rotate(45deg);
+    width:20px;height:20px;background:#fff;border-right:1px solid var(--card-line);border-bottom:1px solid var(--card-line);}
+
+  .qcard{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--card-line);
+    border-radius:16px;padding:20px 22px;box-shadow:0 4px 12px rgba(0,0,0,.04);text-align:left;}
+  .qcard .ic{flex:none;width:48px;height:48px;border-radius:50%;background:var(--sky-deep);}
+  .qcard .edit{flex:1;}
+
+  .cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .chan-card{background:#fff;border:1px solid var(--card-line);border-radius:18px;
+    padding:30px 22px;text-align:center;box-shadow:0 6px 16px rgba(0,0,0,.05);}
+  .chan-card .ic{width:64px;height:64px;border-radius:50%;background:var(--mint);margin:0 auto 16px;}
+
+  .social-row{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;}
+  .social{width:44px;height:44px;border-radius:12px;background:var(--skeleton);}
+  .amount-wrap{display:inline-block;background:#fff;border:1px solid var(--card-line);border-radius:18px;
+    padding:26px 40px;box-shadow:0 8px 20px rgba(0,0,0,.05);}
+  .amount{font-size:clamp(30px,5vw,46px);font-weight:800;color:var(--green-deep);}
+
+  .comment-box{border:1px solid var(--card-line);border-radius:14px;background:#fafbfc;
+    min-height:96px;padding:18px;color:var(--muted);font-size:14px;}
+  .comment{display:flex;gap:14px;padding:18px 2px;border-top:1px solid #eef0f2;}
+  .comment .av{flex:none;width:38px;height:38px;border-radius:50%;background:var(--skeleton);}
+  .comment .ln{flex:1;}
+  .bar{background:var(--skeleton);border-radius:5px;height:13px;margin:7px 0;}
+  .bar.w30{width:30%;}.bar.w60{width:60%;}.bar.w80{width:80%;}
+  .more{display:inline-block;border:1px solid var(--card-line);border-radius:24px;
+    padding:13px 30px;color:var(--muted);font-size:14px;background:#fff;}
+
+  /* ---------- GNB (고정) ---------- */
+  .gnb{background:#fff;border-bottom:1px solid #eef0f2;}
+  .gnb-inner{display:flex;align-items:center;height:70px;gap:20px;}
+  .gnb-logo{flex:none;display:flex;align-items:center;gap:9px;font-size:21px;font-weight:800;color:#03c75a;}
+  .gnb-logo .n{width:28px;height:28px;border-radius:7px;background:#03c75a;color:#fff;font-size:17px;
+    font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .gnb-menu{flex:1;display:flex;justify-content:center;gap:48px;font-size:17px;color:#333;font-weight:700;}
+  .gnb-menu .on{color:#03c75a;}
+  .gnb-right{flex:none;display:flex;align-items:center;gap:7px;font-size:16px;color:#333;font-weight:700;}
+  .gnb-right svg{width:19px;height:19px;stroke:#555;fill:none;}
+
+  /* ---------- 푸터 (고정) ---------- */
+  .ft{background:#f4f6f7;color:#9098a0;padding:40px 0;font-size:12.5px;line-height:1.8;}
+  .ft b{color:#6b7178;font-weight:700;}
+
+  /* ---------- 카운터 배지 (오른쪽 플로팅 · 스크롤 따라옴) ---------- */
+  .counter{position:fixed;top:96px;right:24px;z-index:55;background:#5bb6e8;border-radius:18px;
+    padding:13px 22px;text-align:center;box-shadow:0 8px 18px rgba(91,182,232,.38);}
+  .counter .lbl{font-size:12px;color:#fff;font-weight:700;}
+  .counter .edit{display:inline-block;font-size:23px;font-weight:800;color:#f1ff3d;margin-top:3px;}
+  .counter .edit.is-empty{background:rgba(255,255,255,.2);color:rgba(255,255,255,.8);}
+  .counter .unit{font-size:13px;color:#fff;font-weight:700;margin-left:3px;}
+
+  /* ---------- 댓글 컴포넌트 (공통/고정) ---------- */
+  .cmt{border-top:2px solid #eef0f2;padding-top:28px;}
+  .cmt-head{font-size:15px;color:var(--ink);font-weight:700;margin-bottom:16px;}
+  .cmt-head b{color:var(--green-deep);}
+  .cmt-write{display:flex;gap:10px;align-items:stretch;margin-bottom:6px;}
+  .cmt-input{flex:1;border:1px solid var(--card-line);border-radius:12px;background:#fafbfc;
+    padding:16px 18px;color:var(--muted);font-size:14px;min-height:62px;}
+  .cmt-submit{flex:none;display:flex;align-items:center;background:var(--green);color:#fff;
+    font-weight:700;border-radius:12px;padding:0 26px;font-size:15px;}
+  .cmt-item{display:flex;gap:14px;padding:20px 2px;border-top:1px solid #eef0f2;}
+  .cmt-item .av{flex:none;width:40px;height:40px;border-radius:50%;background:var(--skeleton);}
+  .cmt-item .cb{flex:1;}
+  .cmt-name{font-weight:700;color:var(--ink);font-size:14px;}
+  .cmt-date{color:var(--muted);font-size:12.5px;margin-left:8px;}
+  .cmt-text{font-size:14px;color:var(--body);line-height:1.6;margin-top:6px;}
+  .cmt-act{margin-top:10px;font-size:12.5px;color:var(--muted);display:flex;gap:16px;}
 
   /* ---------- 주석 레이어 ---------- */
-  .meta{max-width:var(--w);margin:22px auto 6px;padding:0 16px;
+  .meta{max-width:var(--w);margin:18px auto 0;padding:0 24px;
     display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;}
-  .tag{flex:none;background:var(--anno);color:#fff;font-size:12px;font-weight:600;
-    padding:5px 11px;border-radius:6px;}
-  .note{margin:0;font-size:12.5px;line-height:1.55;color:var(--anno);
+  .tag{flex:none;background:var(--anno);color:#fff;font-size:12px;font-weight:600;padding:5px 11px;border-radius:6px;}
+  .note{margin:0;font-size:12.5px;line-height:1.55;color:var(--anno-ink);
     background:var(--anno-bg);border:1px solid var(--anno-line);border-radius:6px;padding:6px 11px;}
+  .note b{color:#3c4148;}
   body.clean .meta{display:none;}
-  .usage{max-width:var(--w);margin:18px auto 4px;padding:0 16px;font-size:12.5px;color:var(--anno);line-height:1.6;}
+  .usage{max-width:var(--w);margin:16px auto 0;padding:0 24px;font-size:12.5px;color:var(--anno-ink);line-height:1.6;}
   body.clean .usage{display:none;}
 
-  /* ---------- 툴바 ---------- */
-  .toolbar{position:sticky;top:0;z-index:50;background:#2b2b2b;color:#eee;
+  /* ---------- 컨트롤 툴바 ---------- */
+  .topbar{position:sticky;top:0;z-index:60;background:#1f2226;color:#eee;
     display:flex;align-items:center;justify-content:space-between;gap:12px;
     padding:10px 18px;font-size:13px;flex-wrap:wrap;}
-  .toolbar .label{opacity:.75;}
-  .toolbar .label b{color:#fff;opacity:1;}
+  .topbar .label{opacity:.78;}
+  .topbar .label b{color:#fff;opacity:1;}
   .tb-btns{display:flex;gap:8px;flex-wrap:wrap;}
-  .tb-btn{background:#444;border:1px solid #5a5a5a;color:#fff;padding:7px 13px;
-    border-radius:20px;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;}
-  .tb-btn:hover{background:#555;}
-  .tb-btn .dot{width:10px;height:10px;border-radius:50%;background:var(--anno);}
+  .tb-btn{background:#33373c;border:1px solid #4a4f55;color:#fff;padding:7px 13px;border-radius:20px;
+    font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;}
+  .tb-btn:hover{background:#414750;}
+  .tb-btn .dot{width:10px;height:10px;border-radius:50%;background:#16c265;}
   body.clean .tb-btn .dot{background:#777;}
 
-  @media (max-width:720px){
+  @media (max-width:760px){
     .cards-3{grid-template-columns:1fr;}
-    .row{flex-direction:column;}
-    .block-inner{padding:24px 18px;margin:0 8px;}
-    .meta{padding:0 8px;}
+    .gnb-inner{gap:12px;}
+    .gnb-menu{gap:18px;font-size:13.5px;}
+    .gnb-logo{font-size:18px;}
+    .counter{top:auto;bottom:14px;right:12px;padding:10px 16px;}
   }
   @media print{
-    .toolbar,.meta,.usage{display:none!important;}
+    .topbar,.meta,.usage{display:none!important;}
     .edit.is-empty{background:transparent!important;}
     .edit.is-empty:before{content:"";}
-    .img-slot:not(.filled){background:#f6f6f6;}
-    body{padding:0;background:#fff;}
+    .img-slot:not(.filled){background:#f6f8fa;}
   }
 </style>
 </head>
 <body>
 
-<div class="toolbar">
-  <span class="label">해피빈 캠페인 페이지 · <b>입력형 와이어프레임</b> · 회색 칸을 클릭해 바로 입력</span>
+<div class="topbar">
+  <span class="label">해피빈 캠페인 페이지 · <b>입력형 템플릿</b> · 회색/연한 칸을 클릭해 입력</span>
   <span class="tb-btns">
     <button class="tb-btn" id="annoToggle"><span class="dot"></span><span id="toggleText">주석 켜짐</span></button>
     <button class="tb-btn" id="saveBtn">저장</button>
@@ -129,137 +192,162 @@
   </span>
 </div>
 
-<p class="usage">회색 칸을 클릭하면 바로 글이 입력되고, 입력한 내용이 그 자리에 그대로 출력돼요. 점선 박스는 클릭해서 이미지를 끼워 넣을 수 있고요. 파란 박스는 <b>교체 안내(주석)</b>라서 "주석" 버튼으로 끄면 클라이언트용 화면이 됩니다. <b>저장</b>으로 작성 내용을 파일로 내려받아 두면 캠페인별로 재활용할 수 있어요.</p>
+<p class="usage">연한 칸을 클릭하면 바로 입력되고 그 자리에 출력돼요. 점선 박스는 클릭해 이미지를 넣고요. 파란 회색 박스는 <b>교체 안내(주석)</b>라 "주석" 버튼으로 끄면 클라이언트용 화면이 됩니다. <b>GNB·푸터는 고정</b>이라 편집되지 않아요.</p>
 
 <input type="file" id="filePicker" accept="image/*" style="display:none">
 <input type="file" id="jsonPicker" accept="application/json,.json" style="display:none">
 
-<!-- ① 헤더 -->
-<div class="meta"><span class="tag">① 헤더 / GNB</span><p class="note">해피빈 공통 영역. <b>고정</b>.</p></div>
-<div class="block"><div class="block-inner" style="padding:16px 30px;">
-  <div class="row" style="align-items:center;">
-    <div class="pill" style="min-width:90px;"></div><div class="col"></div>
-    <div class="pill"></div><div class="pill"></div><div class="pill"></div><div class="pill"></div><div class="pill"></div>
-    <div class="pill" style="min-width:64px;background:var(--skeleton-dark);"></div>
+<!-- ===== GNB (고정) ===== -->
+<header class="gnb">
+  <div class="container gnb-inner">
+    <div class="gnb-logo"><span class="n">N</span> 해피빈</div>
+    <nav class="gnb-menu"><span>기부</span><span>펀딩</span><span>공감가게</span><span>가볼까</span><span class="on">굿액션</span></nav>
+    <div class="gnb-right"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg> MY</div>
   </div>
-</div></div>
+</header>
 
-<!-- ② 히어로 -->
+<!-- 플로팅 참여수 배지 (스크롤에 따라 오른쪽에 고정) -->
+<div class="counter"><div class="lbl">캠페인 참여 수</div><div><span class="edit" data-key="hero_count" data-ph="00,000"></span><span class="unit">건</span></div></div>
+
+<!-- ===== ② 히어로 ===== -->
 <div class="meta"><span class="tag">② 히어로 배너</span><p class="note">교체: <b>주최기관 · 타이틀 · 키 비주얼 · 참여수</b></p></div>
-<div class="block"><div class="block-inner" style="position:relative;min-height:340px;background:var(--block-alt);">
-  <div style="position:absolute;top:24px;right:30px;text-align:center;">
-    <div style="font-size:11px;">현재 참여 수</div>
-    <div class="edit num" data-key="hero_count" data-ph="00,000건" style="font-size:22px;"></div>
+<section class="band sky">
+  <div class="container center">
+    <div class="stack-md">
+      <span class="eyebrow editline" data-key="hero_org" data-ph="주최기관명"></span>
+      <div class="h1 edit editblock" data-key="hero_title" data-ph="캠페인 메인 타이틀을 입력하세요"></div>
+      <div class="lead edit editblock" data-key="hero_sub" data-ph="한 줄 서브 카피"></div>
+    </div>
+    <div class="img-slot" data-key="hero_img" style="min-height:230px;margin-top:36px;border-radius:20px;"><button class="rm">✕</button>메인 키 비주얼 / 일러스트 (클릭해 이미지 넣기)</div>
   </div>
-  <div style="max-width:62%;">
-    <span class="edit label" data-key="hero_org" data-ph="주최기관명"></span>
-    <div class="edit title lg mt" data-key="hero_title" data-ph="캠페인 메인 타이틀을 입력하세요 (줄바꿈 가능)"></div>
-    <div class="edit sub mt" data-key="hero_sub" data-ph="한 줄 서브 카피"></div>
+</section>
+
+<!-- ===== ③ 참여 방식 ===== -->
+<div class="meta"><span class="tag">③ 참여 방식</span><p class="note">질문형 패턴. 교체: 질문·답변·CTA. ※ 댓글/채널연결/투표 등으로 통째 교체 가능.</p></div>
+<section class="band">
+  <div class="container center">
+    <div class="h2 edit editline" data-key="q_section" data-ph="섹션 타이틀 (예: 다음 중 무엇일까요?)"></div>
+    <div style="margin-top:28px;"><div class="bubble"><div class="lead edit editline" data-key="q_question" data-ph="질문 문구를 입력하세요"></div></div></div>
+    <div class="stack-sm" style="max-width:560px;margin:36px auto 0;">
+      <div class="qcard"><div class="ic"></div><div class="lead edit" data-key="q_a1" data-ph="답변 1"></div></div>
+      <div class="qcard"><div class="ic"></div><div class="lead edit" data-key="q_a2" data-ph="답변 2"></div></div>
+      <div class="qcard"><div class="ic"></div><div class="lead edit" data-key="q_a3" data-ph="답변 3"></div></div>
+    </div>
+    <div style="margin-top:36px;"><span class="pill-btn"><span class="edit" data-key="q_cta" data-ph="버튼 문구 (예: 콩 받기)"></span></span></div>
   </div>
-  <div class="img-slot mt" data-key="hero_img" style="min-height:190px;"><button class="rm">✕</button>메인 키 비주얼 / 일러스트 (클릭해 이미지 넣기)</div>
-</div></div>
+</section>
 
-<!-- ③ 참여 방식 -->
-<div class="meta"><span class="tag">③ 참여 방식</span><p class="note">질문형 패턴. 교체: 질문·답변 카드·CTA. ※ 댓글/채널연결/투표 등으로 통째 교체 가능.</p></div>
-<div class="block"><div class="block-inner">
-  <div class="center"><div class="edit sec" data-key="q_section" data-ph="섹션 타이틀 (예: 다음 중 무엇일까요?)" style="display:inline-block;"></div></div>
-  <div class="bubble mt mb"><div class="edit body" data-key="q_question" data-ph="질문 문구를 입력하세요"></div></div>
-  <div class="answer"><div class="icon"></div><div class="col"><div class="edit body" data-key="q_a1" data-ph="답변 1"></div></div></div>
-  <div class="answer"><div class="icon"></div><div class="col"><div class="edit body" data-key="q_a2" data-ph="답변 2"></div></div></div>
-  <div class="answer"><div class="icon"></div><div class="col"><div class="edit body" data-key="q_a3" data-ph="답변 3"></div></div></div>
-  <div class="center mt"><span class="btn"><span class="edit cta" data-key="q_cta" data-ph="버튼 문구 (예: 콩 받기)"></span></span></div>
-</div></div>
-
-<!-- ④ 스토리 -->
+<!-- ===== ④ 스토리 ===== -->
 <div class="meta"><span class="tag">④ 스토리</span><p class="note">교체: 헤드라인·서브카피·와이드 일러스트·CTA</p></div>
-<div class="block alt"><div class="block-inner center">
-  <div class="edit sec" data-key="story_title" data-ph="스토리 헤드라인" style="display:inline-block;"></div>
-  <div class="edit sub" data-key="story_sub" data-ph="서브 카피" style="display:inline-block;margin-top:6px;"></div>
-  <div class="img-slot mt" data-key="story_img" style="min-height:210px;"><button class="rm">✕</button>스토리 일러스트 (와이드 · 클릭해 이미지 넣기)</div>
-  <div class="center mt"><span class="btn"><span class="edit cta" data-key="story_cta" data-ph="버튼 문구"></span></span></div>
-</div></div>
+<section class="band mint">
+  <div class="container center stack-md">
+    <div class="h2 edit editline" data-key="story_title" data-ph="스토리 헤드라인"></div>
+    <div class="lead edit editline" data-key="story_sub" data-ph="서브 카피"></div>
+    <div class="img-slot" data-key="story_img" style="min-height:240px;"><button class="rm">✕</button>스토리 일러스트 (와이드 · 클릭해 이미지 넣기)</div>
+    <div><span class="pill-btn ghost"><span class="edit" data-key="story_cta" data-ph="버튼 문구"></span></span></div>
+  </div>
+</section>
 
-<!-- ⑤ 채널 안내 -->
+<!-- ===== ⑤ 채널 안내 ===== -->
 <div class="meta"><span class="tag">⑤ 이용 채널 안내</span><p class="note">3컬럼. 교체: 헤드라인 · 각 카드 제목·설명·CTA</p></div>
-<div class="block"><div class="block-inner">
-  <div class="center mb"><div class="edit sec" data-key="chan_head" data-ph="섹션 헤드라인 (예: 365일 24시간)" style="display:inline-block;"></div></div>
-  <div class="cards-3 mt">
-    <div class="chan-card">
-      <div class="icon"></div>
-      <div class="edit body mt" data-key="chan_t1" data-ph="채널 1 제목" style="font-weight:700;display:inline-block;"></div>
-      <div class="img-slot mt" data-key="chan_i1" style="min-height:70px;"><button class="rm">✕</button>이미지</div>
-      <div class="edit body mt" data-key="chan_d1" data-ph="설명"></div>
-      <div class="center mt"><span class="pill" style="min-width:120px;display:inline-flex;align-items:center;justify-content:center;"><span class="edit cta" data-key="chan_c1" data-ph="CTA" style="color:#777;"></span></span></div>
-    </div>
-    <div class="chan-card">
-      <div class="icon"></div>
-      <div class="edit body mt" data-key="chan_t2" data-ph="채널 2 제목" style="font-weight:700;display:inline-block;"></div>
-      <div class="img-slot mt" data-key="chan_i2" style="min-height:70px;"><button class="rm">✕</button>이미지</div>
-      <div class="edit body mt" data-key="chan_d2" data-ph="설명"></div>
-      <div class="center mt"><span class="pill" style="min-width:120px;display:inline-flex;align-items:center;justify-content:center;"><span class="edit cta" data-key="chan_c2" data-ph="CTA" style="color:#777;"></span></span></div>
-    </div>
-    <div class="chan-card">
-      <div class="icon"></div>
-      <div class="edit body mt" data-key="chan_t3" data-ph="채널 3 제목" style="font-weight:700;display:inline-block;"></div>
-      <div class="img-slot mt" data-key="chan_i3" style="min-height:70px;"><button class="rm">✕</button>이미지</div>
-      <div class="edit body mt" data-key="chan_d3" data-ph="설명"></div>
-      <div class="center mt"><span class="pill" style="min-width:120px;display:inline-flex;align-items:center;justify-content:center;"><span class="edit cta" data-key="chan_c3" data-ph="CTA" style="color:#777;"></span></span></div>
+<section class="band skyflat">
+  <div class="container center">
+    <div class="h2 edit editblock" data-key="chan_head" data-ph="섹션 헤드라인 (예: 365일 24시간 언제 어디서나)" style="max-width:640px;margin:0 auto;"></div>
+    <div class="cards-3" style="margin-top:40px;">
+      <div class="chan-card"><div class="ic"></div>
+        <div class="lead edit editline" data-key="chan_t1" data-ph="채널 1 제목" style="font-weight:700;color:var(--ink);"></div>
+        <div class="img-slot" data-key="chan_i1" style="min-height:80px;margin:14px 0;"><button class="rm">✕</button>이미지</div>
+        <div class="lead edit editblock" data-key="chan_d1" data-ph="설명" style="font-size:14px;"></div>
+        <div style="margin-top:16px;"><span class="pill-btn ghost"><span class="edit" data-key="chan_c1" data-ph="CTA"></span></span></div>
+      </div>
+      <div class="chan-card"><div class="ic"></div>
+        <div class="lead edit editline" data-key="chan_t2" data-ph="채널 2 제목" style="font-weight:700;color:var(--ink);"></div>
+        <div class="img-slot" data-key="chan_i2" style="min-height:80px;margin:14px 0;"><button class="rm">✕</button>이미지</div>
+        <div class="lead edit editblock" data-key="chan_d2" data-ph="설명" style="font-size:14px;"></div>
+        <div style="margin-top:16px;"><span class="pill-btn ghost"><span class="edit" data-key="chan_c2" data-ph="CTA"></span></span></div>
+      </div>
+      <div class="chan-card"><div class="ic"></div>
+        <div class="lead edit editline" data-key="chan_t3" data-ph="채널 3 제목" style="font-weight:700;color:var(--ink);"></div>
+        <div class="img-slot" data-key="chan_i3" style="min-height:80px;margin:14px 0;"><button class="rm">✕</button>이미지</div>
+        <div class="lead edit editblock" data-key="chan_d3" data-ph="설명" style="font-size:14px;"></div>
+        <div style="margin-top:16px;"><span class="pill-btn ghost"><span class="edit" data-key="chan_c3" data-ph="CTA"></span></span></div>
+      </div>
     </div>
   </div>
-</div></div>
+</section>
 
-<!-- ⑥ SNS -->
+<!-- ===== ⑥ SNS ===== -->
 <div class="meta"><span class="tag">⑥ 소식 · SNS</span><p class="note">교체: 한 줄 카피 · SNS 채널</p></div>
-<div class="block alt"><div class="block-inner">
-  <div class="row" style="align-items:center;justify-content:center;">
-    <div class="edit body" data-key="sns_copy" data-ph="SNS 안내 카피"></div>
-    <div class="icon sq" style="width:40px;height:40px;"></div><div class="icon sq" style="width:40px;height:40px;"></div><div class="icon sq" style="width:40px;height:40px;"></div>
+<section class="band tight">
+  <div class="container social-row">
+    <div class="lead edit editline" data-key="sns_copy" data-ph="SNS 안내 카피"></div>
+    <div class="social"></div><div class="social"></div><div class="social"></div>
   </div>
-</div></div>
+</section>
 
-<!-- ⑦ 기부금 -->
+<!-- ===== ⑦ 기부금 ===== -->
 <div class="meta"><span class="tag">⑦ 기부금 안내</span><p class="note">교체: <b>강조 금액</b> · 기부처 설명</p></div>
-<div class="block"><div class="block-inner center">
-  <div class="edit body" data-key="dona_lead" data-ph="기부금 안내 문구 (앞부분)" style="display:inline-block;"></div>
-  <div class="edit num mt" data-key="dona_amount" data-ph="최대 0,000,000원" style="display:inline-block;"></div>
-  <div class="edit body mt" data-key="dona_desc" data-ph="기부처/매칭 설명" style="display:inline-block;"></div>
-  <div class="center mt"><span class="pill" style="min-width:200px;display:inline-flex;align-items:center;justify-content:center;"><span class="edit cta" data-key="dona_cta" data-ph="자세히 보기 링크 문구" style="color:#777;"></span></span></div>
-</div></div>
+<section class="band">
+  <div class="container center stack-md">
+    <div class="lead edit editline" data-key="dona_lead" data-ph="기부금 안내 문구 (앞부분)"></div>
+    <div><span class="amount-wrap"><span class="amount edit" data-key="dona_amount" data-ph="최대 0,000,000원"></span></span></div>
+    <div class="lead edit editline" data-key="dona_desc" data-ph="기부처/매칭 설명"></div>
+    <div><span class="pill-btn ghost"><span class="edit" data-key="dona_cta" data-ph="자세히 보기 링크 문구"></span></span></div>
+  </div>
+</section>
 
-<!-- ⑧ 공유 -->
+<!-- ===== ⑧ 공유 ===== -->
 <div class="meta"><span class="tag">⑧ 공유하기</span><p class="note">교체: 공유 유도 카피</p></div>
-<div class="block alt"><div class="block-inner">
-  <div class="row" style="align-items:center;justify-content:center;">
-    <div class="edit body" data-key="share_copy" data-ph="공유 유도 카피"></div>
-    <div class="icon sq" style="width:36px;height:36px;"></div><div class="icon sq" style="width:36px;height:36px;"></div><div class="icon sq" style="width:36px;height:36px;"></div><div class="icon sq" style="width:36px;height:36px;"></div>
+<section class="band mint tight">
+  <div class="container social-row">
+    <div class="lead edit editline" data-key="share_copy" data-ph="공유 유도 카피"></div>
+    <div class="social"></div><div class="social"></div><div class="social"></div><div class="social"></div>
   </div>
-</div></div>
+</section>
 
-<!-- ⑨ 댓글 참여 -->
-<div class="meta"><span class="tag">⑨ 댓글 참여</span><p class="note">교체: 질문 헤드라인 · 참여 기간/지급일 안내</p></div>
-<div class="block"><div class="block-inner">
-  <div class="center mb">
-    <div class="edit sec" data-key="cm_title" data-ph="참여 유도 질문 헤드라인" style="display:inline-block;"></div>
-    <div class="edit body mt" data-key="cm_guide" data-ph="참여 기간 · 콩 지급일 안내" style="display:inline-block;"></div>
+<!-- ===== ⑨ 댓글 참여 ===== -->
+<div class="meta"><span class="tag">⑨ 댓글 참여</span><p class="note">교체: 질문 헤드라인 · 참여 기간/지급일 안내. <b>댓글 컴포넌트는 공통 디자인(고정)</b>.</p></div>
+<section class="band">
+  <div class="container">
+    <div class="center stack-sm" style="margin-bottom:30px;">
+      <div class="h2 edit editline" data-key="cm_title" data-ph="참여 유도 질문 헤드라인"></div>
+      <div class="lead edit editline" data-key="cm_guide" data-ph="참여 기간 · 콩 지급일 안내" style="font-size:14px;color:var(--muted);"></div>
+    </div>
+    <div class="cmt">
+      <div class="cmt-head">총 <b>0</b>개의 댓글</div>
+      <div class="cmt-write">
+        <div class="cmt-input">댓글을 남겨보세요 (로그인 후 작성)</div>
+        <div class="cmt-submit">등록</div>
+      </div>
+      <div class="cmt-item"><div class="av"></div><div class="cb">
+        <div><span class="cmt-name">user****</span><span class="cmt-date">2026.06.08</span></div>
+        <div class="cmt-text">실제 작성된 댓글이 이 영역에 노출됩니다.</div>
+        <div class="cmt-act"><span>답글</span><span>♡ 0</span></div>
+      </div></div>
+      <div class="cmt-item"><div class="av"></div><div class="cb">
+        <div><span class="cmt-name">user****</span><span class="cmt-date">2026.06.08</span></div>
+        <div class="cmt-text">댓글 컴포넌트는 해피빈 공통 디자인이라 그대로 들어갑니다.</div>
+        <div class="cmt-act"><span>답글</span><span>♡ 0</span></div>
+      </div></div>
+      <div class="center" style="margin-top:22px;"><span class="more">댓글 더보기</span></div>
+    </div>
   </div>
-  <div class="img-slot" data-key="cm_img" style="min-height:90px;"><button class="rm">✕</button>댓글 입력창 영역</div>
-  <div class="comment"><div class="icon"></div><div class="col"><div class="bar w30"></div><div class="bar w80"></div></div></div>
-  <div class="comment"><div class="icon"></div><div class="col"><div class="bar w30"></div><div class="bar w60"></div></div></div>
-  <div class="center mt"><span class="num-pill">댓글 더보기</span></div>
-</div></div>
+</section>
 
-<!-- ⑩ 푸터 -->
-<div class="meta"><span class="tag">⑩ 푸터</span><p class="note">운영기관·사업자 정보. <b>고정</b>.</p></div>
-<div class="block"><div class="block-inner alt" style="background:var(--block-alt);">
-  <div class="bar w60"></div><div class="bar w90"></div><div class="bar w80"></div><div class="bar w40"></div>
-</div></div>
+<!-- ===== 푸터 (고정) ===== -->
+<footer class="ft">
+  <div class="container">
+    <div><b>해피빈</b> · 공지사항 · 자주 묻는 질문 · 이용약관 · 개인정보처리방침</div>
+    <div style="margin-top:10px;">주식회사 네이버 · 운영기관 정보 · 사업자등록번호 000-00-00000 · 대표 000</div>
+    <div style="margin-top:6px;">Copyright © NAVER Corp. All Rights Reserved.</div>
+  </div>
+</footer>
 
 <script>
 (function(){
   var $=function(s,c){return (c||document).querySelector(s);};
   var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
 
-  /* ---- 빈칸 표시 처리 ---- */
   function refreshEmpty(el){
     if(el.innerText.replace(/\u200b/g,'').trim()==='') el.classList.add('is-empty');
     else el.classList.remove('is-empty');
@@ -270,7 +358,6 @@
     el.addEventListener('input',function(){refreshEmpty(el);});
     el.addEventListener('focus',function(){if(el.classList.contains('is-empty')) el.innerText='';});
     el.addEventListener('blur',function(){refreshEmpty(el);});
-    // 붙여넣기는 서식 없이 텍스트만
     el.addEventListener('paste',function(e){
       e.preventDefault();
       var t=(e.clipboardData||window.clipboardData).getData('text');
@@ -278,18 +365,9 @@
     });
   });
 
-  /* ---- 이미지 슬롯 ---- */
   var picker=$('#filePicker'), activeSlot=null;
-  function applyImage(slot,dataUrl){
-    slot.style.backgroundImage='url('+dataUrl+')';
-    slot.classList.add('filled');
-    slot.dataset.img=dataUrl;
-  }
-  function clearImage(slot){
-    slot.style.backgroundImage='';
-    slot.classList.remove('filled');
-    delete slot.dataset.img;
-  }
+  function applyImage(slot,d){slot.style.backgroundImage='url('+d+')';slot.classList.add('filled');slot.dataset.img=d;}
+  function clearImage(slot){slot.style.backgroundImage='';slot.classList.remove('filled');delete slot.dataset.img;}
   $$('.img-slot').forEach(function(slot){
     slot.addEventListener('click',function(e){
       if(e.target.classList.contains('rm')) return;
@@ -300,24 +378,18 @@
   });
   picker.addEventListener('change',function(){
     var f=picker.files[0]; if(!f||!activeSlot) return;
-    var r=new FileReader();
-    r.onload=function(){applyImage(activeSlot,r.result);};
-    r.readAsDataURL(f);
+    var r=new FileReader(); r.onload=function(){applyImage(activeSlot,r.result);}; r.readAsDataURL(f);
   });
 
-  /* ---- 주석 토글 ---- */
   var on=true, tBtn=$('#annoToggle'), tTxt=$('#toggleText');
   tBtn.addEventListener('click',function(){
     on=!on; document.body.classList.toggle('clean',!on);
     tTxt.textContent= on?'주석 켜짐':'주석 꺼짐 (클라이언트 보기)';
   });
 
-  /* ---- 저장 / 불러오기 ---- */
   function collect(){
     var d={texts:{},images:{}};
-    $$('.edit').forEach(function(el){
-      if(!el.classList.contains('is-empty')) d.texts[el.dataset.key]=el.innerText;
-    });
+    $$('.edit').forEach(function(el){ if(!el.classList.contains('is-empty')) d.texts[el.dataset.key]=el.innerText; });
     $$('.img-slot').forEach(function(s){ if(s.dataset.img) d.images[s.dataset.key]=s.dataset.img; });
     return d;
   }
@@ -325,35 +397,26 @@
     if(!d) return;
     $$('.edit').forEach(function(el){
       var v=(d.texts||{})[el.dataset.key];
-      if(v!=null){el.innerText=v;} else {el.innerText='';}
-      refreshEmpty(el);
+      el.innerText=(v!=null)?v:''; refreshEmpty(el);
     });
     $$('.img-slot').forEach(function(s){
       var v=(d.images||{})[s.dataset.key];
-      if(v){applyImage(s,v);} else {clearImage(s);}
+      if(v) applyImage(s,v); else clearImage(s);
     });
   }
   $('#saveBtn').addEventListener('click',function(){
     var blob=new Blob([JSON.stringify(collect(),null,2)],{type:'application/json'});
-    var a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='happybean-campaign.json';
-    document.body.appendChild(a); a.click(); a.remove();
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='happybean-campaign.json'; document.body.appendChild(a); a.click(); a.remove();
   });
   var jsonPicker=$('#jsonPicker');
   $('#loadBtn').addEventListener('click',function(){jsonPicker.value='';jsonPicker.click();});
   jsonPicker.addEventListener('change',function(){
     var f=jsonPicker.files[0]; if(!f) return;
-    var r=new FileReader();
-    r.onload=function(){try{apply(JSON.parse(r.result));}catch(e){alert('파일을 읽지 못했어요.');}};
-    r.readAsText(f);
+    var r=new FileReader(); r.onload=function(){try{apply(JSON.parse(r.result));}catch(e){alert('파일을 읽지 못했어요.');}}; r.readAsText(f);
   });
-
-  /* ---- 인쇄 / 초기화 ---- */
   $('#printBtn').addEventListener('click',function(){window.print();});
-  $('#resetBtn').addEventListener('click',function(){
-    if(confirm('입력한 내용을 모두 지울까요?')) apply({texts:{},images:{}});
-  });
+  $('#resetBtn').addEventListener('click',function(){ if(confirm('입력한 내용을 모두 지울까요?')) apply({texts:{},images:{}}); });
 })();
 </script>
 </body>
