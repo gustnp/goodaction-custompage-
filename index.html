@@ -3,421 +3,358 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>해피빈 캠페인 페이지 · 입력형 템플릿</title>
+<title>해피빈을 AI 답변에 더 자주 등장시키는 법 — 팀 공유 자료</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --green:#16c265; --green-deep:#0fa653;
-    --sky:#eaf4fd; --sky-deep:#d6ebfb; --mint:#eaf7ef;
-    --ink:#2c2f33; --body:#5b6168; --muted:#9aa0a6;
-    --card:#ffffff; --card-line:#ecEEF0; --skeleton:#e3e6ea; --skeleton-d:#d2d6db;
-    --anno:#525a66; --anno-bg:#f1f3f5; --anno-line:#e3e6ea; --anno-ink:#5a626d;
-    --edit-empty:#eef1f4; --edit-focus:#9fdcbc;
-    --w:960px;
+    --bg:#F6F7F4;
+    --panel:#FFFFFF;
+    --ink:#16201A;
+    --muted:#5F6B62;
+    --faint:#8A938B;
+    --line:#E3E7E0;
+    --line-strong:#D2D8CE;
+    --green:#1B8A3D;
+    --green-bright:#22B14C;
+    --green-wash:#EAF4EC;
+    --amber-wash:#FBF3E4;
+    --amber-ink:#8A6212;
+    --red-wash:#FBECEA;
+    --red-ink:#9A3A2C;
+    --radius:14px;
+    --maxw:880px;
   }
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{margin:0;background:#fff;color:var(--body);
-    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-    -webkit-font-smoothing:antialiased;}
-  .container{max-width:var(--w);margin:0 auto;padding:0 24px;}
-
-  /* ---------- 밴드(전체폭 섹션) ---------- */
-  .band{padding:clamp(52px,7vw,84px) 0;}
-  .band.sky{background:linear-gradient(180deg,var(--sky),#fff);}
-  .band.mint{background:var(--mint);}
-  .band.skyflat{background:var(--sky);}
-  .band.tight{padding:clamp(28px,4vw,44px) 0;}
-
-  /* ---------- 타이포 ---------- */
-  .eyebrow{display:inline-block;background:#e9f8ef;color:var(--green-deep);
-    font-size:13px;font-weight:700;padding:6px 14px;border-radius:20px;}
-  .h1{font-size:clamp(28px,4.6vw,42px);font-weight:800;line-height:1.32;color:var(--ink);}
-  .h2{font-size:clamp(22px,3.4vw,30px);font-weight:800;line-height:1.34;color:var(--ink);}
-  .lead{font-size:clamp(15px,1.8vw,17px);line-height:1.65;color:var(--body);}
-  .center{text-align:center;}
-  .stack-sm > *+*{margin-top:12px;}
-  .stack-md > *+*{margin-top:20px;}
-
-  /* ---------- 편집 슬롯 ---------- */
-  .edit{outline:none;border-radius:8px;padding:2px 8px;white-space:pre-wrap;cursor:text;
-    transition:background .12s,box-shadow .12s;}
-  .edit:hover{background:rgba(22,194,101,.06);}
-  .edit:focus{background:#fff;box-shadow:0 0 0 2px var(--edit-focus);}
-  .edit.is-empty{background:var(--edit-empty);color:var(--muted);font-weight:500;}
-  .edit.is-empty:before{content:attr(data-ph);}
-  .editblock{display:block;}
-  .editline{display:inline-block;}
-
-  /* ---------- 이미지 슬롯 ---------- */
-  .img-slot{position:relative;border:2px dashed #c4ccd2;border-radius:14px;
-    background:#f6f8fa;background-size:cover;background-position:center;background-repeat:no-repeat;
-    display:flex;align-items:center;justify-content:center;text-align:center;
-    color:var(--muted);font-size:13px;min-height:120px;padding:16px;cursor:pointer;}
-  .img-slot.filled{border-style:solid;border-color:var(--card-line);color:transparent;}
-  .img-slot:hover{border-color:var(--green);}
-  .img-slot .rm{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;
-    background:rgba(0,0,0,.55);color:#fff;border:0;cursor:pointer;display:none;
-    align-items:center;justify-content:center;font-size:13px;line-height:1;}
-  .img-slot.filled .rm{display:flex;}
-
-  /* ---------- 컴포넌트 ---------- */
-  .pill-btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;
-    padding:0 34px;background:var(--green);color:#fff;border-radius:28px;font-weight:700;
-    font-size:16px;box-shadow:0 6px 14px rgba(22,194,101,.28);}
-  .pill-btn.ghost{background:#fff;color:var(--green-deep);border:1.5px solid var(--green);box-shadow:none;
-    min-height:40px;padding:0 22px;font-size:14px;}
-  .pill-btn .edit.is-empty{background:transparent;color:rgba(255,255,255,.85);}
-  .pill-btn.ghost .edit.is-empty{background:transparent;color:var(--green-deep);}
-
-  .bubble{position:relative;display:inline-block;background:#fff;border:1px solid var(--card-line);
-    border-radius:18px;padding:22px 28px;max-width:520px;box-shadow:0 8px 20px rgba(0,0,0,.05);}
-  .bubble:after{content:"";position:absolute;left:50%;bottom:-11px;transform:translateX(-50%) rotate(45deg);
-    width:20px;height:20px;background:#fff;border-right:1px solid var(--card-line);border-bottom:1px solid var(--card-line);}
-
-  .qcard{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--card-line);
-    border-radius:16px;padding:20px 22px;box-shadow:0 4px 12px rgba(0,0,0,.04);text-align:left;}
-  .qcard .ic{flex:none;width:48px;height:48px;border-radius:50%;background:var(--sky-deep);}
-  .qcard .edit{flex:1;}
-
-  .cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
-  .chan-card{background:#fff;border:1px solid var(--card-line);border-radius:18px;
-    padding:30px 22px;text-align:center;box-shadow:0 6px 16px rgba(0,0,0,.05);}
-  .chan-card .ic{width:64px;height:64px;border-radius:50%;background:var(--mint);margin:0 auto 16px;}
-
-  .social-row{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;}
-  .social{width:44px;height:44px;border-radius:12px;background:var(--skeleton);}
-  .amount-wrap{display:inline-block;background:#fff;border:1px solid var(--card-line);border-radius:18px;
-    padding:26px 40px;box-shadow:0 8px 20px rgba(0,0,0,.05);}
-  .amount{font-size:clamp(30px,5vw,46px);font-weight:800;color:var(--green-deep);}
-
-  .comment-box{border:1px solid var(--card-line);border-radius:14px;background:#fafbfc;
-    min-height:96px;padding:18px;color:var(--muted);font-size:14px;}
-  .comment{display:flex;gap:14px;padding:18px 2px;border-top:1px solid #eef0f2;}
-  .comment .av{flex:none;width:38px;height:38px;border-radius:50%;background:var(--skeleton);}
-  .comment .ln{flex:1;}
-  .bar{background:var(--skeleton);border-radius:5px;height:13px;margin:7px 0;}
-  .bar.w30{width:30%;}.bar.w60{width:60%;}.bar.w80{width:80%;}
-  .more{display:inline-block;border:1px solid var(--card-line);border-radius:24px;
-    padding:13px 30px;color:var(--muted);font-size:14px;background:#fff;}
-
-  /* ---------- GNB (고정) ---------- */
-  .gnb{background:#fff;border-bottom:1px solid #eef0f2;}
-  .gnb-inner{display:flex;align-items:center;height:70px;gap:20px;}
-  .gnb-logo{flex:none;display:flex;align-items:center;gap:9px;font-size:21px;font-weight:800;color:#03c75a;}
-  .gnb-logo .n{width:28px;height:28px;border-radius:7px;background:#03c75a;color:#fff;font-size:17px;
-    font-weight:800;display:flex;align-items:center;justify-content:center;}
-  .gnb-menu{flex:1;display:flex;justify-content:center;gap:48px;font-size:17px;color:#333;font-weight:700;}
-  .gnb-menu .on{color:#03c75a;}
-  .gnb-right{flex:none;display:flex;align-items:center;gap:7px;font-size:16px;color:#333;font-weight:700;}
-  .gnb-right svg{width:19px;height:19px;stroke:#555;fill:none;}
-
-  /* ---------- 푸터 (고정) ---------- */
-  .ft{background:#f4f6f7;color:#9098a0;padding:40px 0;font-size:12.5px;line-height:1.8;}
-  .ft b{color:#6b7178;font-weight:700;}
-
-  /* ---------- 카운터 배지 (오른쪽 플로팅 · 스크롤 따라옴) ---------- */
-  .counter{position:fixed;top:96px;right:24px;z-index:55;background:#5bb6e8;border-radius:18px;
-    padding:13px 22px;text-align:center;box-shadow:0 8px 18px rgba(91,182,232,.38);}
-  .counter .lbl{font-size:12px;color:#fff;font-weight:700;}
-  .counter .edit{display:inline-block;font-size:23px;font-weight:800;color:#f1ff3d;margin-top:3px;}
-  .counter .edit.is-empty{background:rgba(255,255,255,.2);color:rgba(255,255,255,.8);}
-  .counter .unit{font-size:13px;color:#fff;font-weight:700;margin-left:3px;}
-
-  /* ---------- 댓글 컴포넌트 (공통/고정) ---------- */
-  .cmt{border-top:2px solid #eef0f2;padding-top:28px;}
-  .cmt-head{font-size:15px;color:var(--ink);font-weight:700;margin-bottom:16px;}
-  .cmt-head b{color:var(--green-deep);}
-  .cmt-write{display:flex;gap:10px;align-items:stretch;margin-bottom:6px;}
-  .cmt-input{flex:1;border:1px solid var(--card-line);border-radius:12px;background:#fafbfc;
-    padding:16px 18px;color:var(--muted);font-size:14px;min-height:62px;}
-  .cmt-submit{flex:none;display:flex;align-items:center;background:var(--green);color:#fff;
-    font-weight:700;border-radius:12px;padding:0 26px;font-size:15px;}
-  .cmt-item{display:flex;gap:14px;padding:20px 2px;border-top:1px solid #eef0f2;}
-  .cmt-item .av{flex:none;width:40px;height:40px;border-radius:50%;background:var(--skeleton);}
-  .cmt-item .cb{flex:1;}
-  .cmt-name{font-weight:700;color:var(--ink);font-size:14px;}
-  .cmt-date{color:var(--muted);font-size:12.5px;margin-left:8px;}
-  .cmt-text{font-size:14px;color:var(--body);line-height:1.6;margin-top:6px;}
-  .cmt-act{margin-top:10px;font-size:12.5px;color:var(--muted);display:flex;gap:16px;}
-
-  /* ---------- 주석 레이어 ---------- */
-  .meta{max-width:var(--w);margin:18px auto 0;padding:0 24px;
-    display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;}
-  .tag{flex:none;background:var(--anno);color:#fff;font-size:12px;font-weight:600;padding:5px 11px;border-radius:6px;}
-  .note{margin:0;font-size:12.5px;line-height:1.55;color:var(--anno-ink);
-    background:var(--anno-bg);border:1px solid var(--anno-line);border-radius:6px;padding:6px 11px;}
-  .note b{color:#3c4148;}
-  body.clean .meta{display:none;}
-  .usage{max-width:var(--w);margin:16px auto 0;padding:0 24px;font-size:12.5px;color:var(--anno-ink);line-height:1.6;}
-  body.clean .usage{display:none;}
-
-  /* ---------- 컨트롤 툴바 ---------- */
-  .topbar{position:sticky;top:0;z-index:60;background:#1f2226;color:#eee;
-    display:flex;align-items:center;justify-content:space-between;gap:12px;
-    padding:10px 18px;font-size:13px;flex-wrap:wrap;}
-  .topbar .label{opacity:.78;}
-  .topbar .label b{color:#fff;opacity:1;}
-  .tb-btns{display:flex;gap:8px;flex-wrap:wrap;}
-  .tb-btn{background:#33373c;border:1px solid #4a4f55;color:#fff;padding:7px 13px;border-radius:20px;
-    font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;}
-  .tb-btn:hover{background:#414750;}
-  .tb-btn .dot{width:10px;height:10px;border-radius:50%;background:#16c265;}
-  body.clean .tb-btn .dot{background:#777;}
-
-  @media (max-width:760px){
-    .cards-3{grid-template-columns:1fr;}
-    .gnb-inner{gap:12px;}
-    .gnb-menu{gap:18px;font-size:13.5px;}
-    .gnb-logo{font-size:18px;}
-    .counter{top:auto;bottom:14px;right:12px;padding:10px 16px;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Noto Sans KR",system-ui,sans-serif;
+    font-weight:400;
+    line-height:1.74;
+    letter-spacing:-0.01em;
+    -webkit-font-smoothing:antialiased;
   }
-  @media print{
-    .topbar,.meta,.usage{display:none!important;}
-    .edit.is-empty{background:transparent!important;}
-    .edit.is-empty:before{content:"";}
-    .img-slot:not(.filled){background:#f6f8fa;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  .mono{font-family:"Noto Sans Mono",monospace;letter-spacing:0;}
+
+  /* ---- header ---- */
+  header.top{padding:64px 0 40px;}
+  .eyebrow{
+    font-family:"Noto Sans Mono",monospace;
+    font-size:12px;font-weight:700;letter-spacing:0.12em;
+    color:var(--green);
+    display:flex;align-items:center;gap:10px;margin-bottom:22px;
   }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--green-bright);display:inline-block;}
+  h1{
+    font-size:clamp(28px,5.2vw,44px);font-weight:900;line-height:1.18;
+    letter-spacing:-0.03em;margin:0 0 18px;
+  }
+  h1 .hl{color:var(--green);}
+  .lede{font-size:clamp(16px,2.4vw,18px);color:var(--muted);max-width:60ch;margin:0;}
+  .meta{
+    margin-top:26px;padding-top:18px;border-top:1px solid var(--line);
+    display:flex;flex-wrap:wrap;gap:8px 28px;font-size:13.5px;color:var(--faint);
+  }
+  .meta b{color:var(--muted);font-weight:700;}
+
+  /* ---- verify note ---- */
+  .note{
+    margin:8px 0 48px;background:var(--amber-wash);
+    border:1px solid #EBDCBE;border-radius:var(--radius);
+    padding:18px 20px;font-size:14.5px;color:var(--amber-ink);line-height:1.68;
+  }
+  .note strong{font-weight:700;}
+  .note .tag{
+    font-size:12.5px;font-weight:700;display:block;margin-bottom:6px;
+  }
+
+  /* ---- section scaffolding ---- */
+  section{margin:0 0 56px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;}
+  .sec-num{
+    font-family:"Noto Sans Mono",monospace;font-size:13px;font-weight:700;
+    color:var(--green-bright);letter-spacing:0.04em;flex:none;padding-top:4px;
+  }
+  h2{font-size:clamp(20px,3.4vw,26px);font-weight:900;letter-spacing:-0.02em;margin:0;line-height:1.3;}
+  .sec-sub{color:var(--muted);font-size:15px;margin:6px 0 22px 0;padding-left:34px;}
+  @media(max-width:560px){.sec-sub{padding-left:0;}}
+
+  p{margin:0 0 14px;}
+  .body-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px 26px;
+  }
+
+  /* ---- evidence two-up ---- */
+  .twoup{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:620px){.twoup{grid-template-columns:1fr;}}
+  .ev{border-radius:var(--radius);padding:20px 22px;border:1px solid var(--line);}
+  .ev.ok{background:var(--green-wash);border-color:#CBE6D2;}
+  .ev.no{background:var(--red-wash);border-color:#F0D5D0;}
+  .ev .mark{font-size:13px;font-weight:700;}
+  .ev.ok .mark{color:var(--green);}
+  .ev.no .mark{color:var(--red-ink);}
+  .ev h3{font-size:16px;font-weight:700;margin:8px 0 6px;}
+  .ev p{font-size:14px;color:var(--muted);margin:0;}
+  .src{font-size:13px;color:var(--faint);margin-top:18px;line-height:1.6;}
+
+  /* ---- signature: priority stack ---- */
+  .stack{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
+  .lev{
+    background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;
+    transition:border-color .2s ease;
+  }
+  .lev:hover{border-color:var(--line-strong);}
+  .lev .rank{
+    font-family:"Noto Sans Mono",monospace;font-size:22px;font-weight:700;
+    color:var(--green);width:34px;text-align:center;flex:none;
+  }
+  .lev .title{font-weight:700;font-size:16px;line-height:1.4;}
+  .lev .title span{display:block;font-weight:400;font-size:13.5px;color:var(--muted);margin-top:3px;letter-spacing:0;}
+  .lev .impact{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:96px;}
+  .lev .impact .lab{font-size:11px;color:var(--faint);}
+  .bar{width:96px;height:7px;background:var(--line);border-radius:4px;overflow:hidden;}
+  .bar i{display:block;height:100%;background:var(--green-bright);border-radius:4px;transform-origin:left;animation:grow .9s cubic-bezier(.2,.7,.2,1) both;}
+  @keyframes grow{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+  .lev.low .rank{color:var(--faint);}
+  .lev.low .bar i{background:var(--line-strong);}
+  @media(max-width:560px){
+    .lev{grid-template-columns:auto 1fr;}
+    .lev .impact{grid-column:1 / -1;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;}
+    .bar{width:120px;}
+  }
+
+  /* ---- action detail ---- */
+  .action{
+    border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);
+    padding:22px 24px;margin-bottom:14px;
+  }
+  .action .ah{display:flex;align-items:baseline;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+  .action .pill{
+    font-size:12.5px;font-weight:700;
+    background:var(--green-wash);color:var(--green);border-radius:20px;padding:3px 12px;flex:none;
+  }
+  .action h3{font-size:17px;font-weight:700;margin:0;line-height:1.4;}
+  .action p{font-size:14.5px;color:var(--muted);margin:0 0 12px;}
+  .action ul{margin:0;padding-left:20px;}
+  .action li{font-size:14.5px;color:var(--muted);margin-bottom:7px;}
+  .action li b{color:var(--ink);font-weight:700;}
+  .quote{
+    background:var(--bg);border-left:3px solid var(--green-bright);border-radius:0 8px 8px 0;
+    padding:14px 18px;margin:6px 0 4px;font-size:14.5px;color:var(--ink);line-height:1.7;
+  }
+  .quote .ph{color:var(--green);font-weight:700;}
+
+  /* ---- cut list ---- */
+  .cut{display:grid;grid-template-columns:1fr;gap:10px;}
+  .cut-item{
+    background:var(--red-wash);border:1px solid #F0D5D0;border-radius:var(--radius);
+    padding:14px 18px;font-size:14.5px;color:var(--red-ink);
+  }
+  .cut-item b{font-weight:700;}
+  .cut-item span{color:#7a4a40;}
+
+  /* ---- measure ---- */
+  .measure{background:var(--ink);color:#E8EDE8;border-radius:var(--radius);padding:26px 28px;}
+  .measure h2{color:#fff;}
+  .measure p{color:#B9C4BC;}
+  .measure .var{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-top:1px solid rgba(255,255,255,.1);}
+  .measure .var:first-of-type{border-top:none;}
+  .measure .var .k{font-size:13.5px;font-weight:700;color:var(--green-bright);flex:none;width:130px;padding-top:1px;}
+  .measure .var .v{font-size:14.5px;color:#D5DDD6;}
+  @media(max-width:560px){
+    .measure .var{flex-direction:column;gap:4px;}
+    .measure .var .k{width:auto;}
+  }
+
+  /* ---- next ---- */
+  .next{text-align:center;padding:8px 0 8px;}
+  .next .q{font-size:17px;font-weight:700;margin-bottom:8px;}
+  .next .opt{font-size:14.5px;color:var(--muted);}
+  .next .opt b{color:var(--green);font-weight:700;}
+
+  footer{border-top:1px solid var(--line);margin-top:48px;padding:24px 0 60px;font-size:13px;color:var(--faint);line-height:1.7;}
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+  }
+  :focus-visible{outline:2px solid var(--green-bright);outline-offset:2px;border-radius:4px;}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="topbar">
-  <span class="label">해피빈 캠페인 페이지 · <b>입력형 템플릿</b> · 회색/연한 칸을 클릭해 입력</span>
-  <span class="tb-btns">
-    <button class="tb-btn" id="annoToggle"><span class="dot"></span><span id="toggleText">주석 켜짐</span></button>
-    <button class="tb-btn" id="saveBtn">저장</button>
-    <button class="tb-btn" id="loadBtn">불러오기</button>
-    <button class="tb-btn" id="printBtn">인쇄·PDF</button>
-    <button class="tb-btn" id="resetBtn">초기화</button>
-  </span>
+  <header class="top">
+    <div class="eyebrow">CSR제휴팀 · 내부 공유 자료</div>
+    <h1>해피빈을 AI 답변에 더 자주 <span class="hl">등장</span>시키는 법</h1>
+    <p class="lede">사람들이 ChatGPT·Gemini·Perplexity 같은 AI에게 물었을 때 해피빈이 더 자주 언급되게 만드는 전략입니다. 기존 초안을 실제 작동 원리로 다시 따져보고, 담당자가 바로 할 수 있는 일을 효과가 큰 순서로 정리했습니다.</p>
+    <div class="meta">
+      <span><b>대상</b> CSR제휴팀</span>
+      <span><b>성격</b> 전략 검토 · 실행안</span>
+      <span><b>상태</b> 검토용 초안</span>
+    </div>
+  </header>
+
+  <div class="note">
+    <span class="tag">⚠ 외부 공유 전에 확인할 점</span>
+    이 자료의 <strong>전략 논리</strong>는 공개된 연구와 검색·AI의 작동 방식에 근거합니다. 다만 외부 사례의 <strong>출처와 프로그램 이름</strong>은 작성 당시 사실 확인을 못 했습니다. 공식 명칭과 수치는 <strong>외부에 쓰기 전 반드시 내부 확인</strong>해 주세요.
+  </div>
+
+  <!-- 1 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>먼저, 목표부터 다시 잡기</h2></div>
+    <p class="sec-sub">“AI가 해피빈을 협업 기관으로 인식하게 한다”는 너무 막연해서 측정이 안 됩니다. 담당자가 다룰 수 있는 구체적인 목표로 바꿉니다.</p>
+    <div class="body-card">
+      <p style="margin:0 0 14px;font-size:15.5px;color:var(--ink);">
+        <b>기업 CSR 담당자가 AI에게</b> “임직원 기부 캠페인 어떻게 운영하지?”, “기업 사회공헌 기부 플랫폼 추천해줘”라고 물었을 때 <b style="color:var(--green);">해피빈이 후보로 떠오르게 한다.</b>
+      </p>
+      <p style="margin:0;font-size:14.5px;color:var(--muted);">
+        이렇게 잡으면 두 가지가 분명해집니다. ① 챙겨야 할 콘텐츠는 일반 기부자용 문구가 아니라 <b style="color:var(--ink);font-weight:700;">CSR 업계 맥락의 콘텐츠</b>입니다. ② 그래서 중요한 외부 출처도 일반 뉴스가 아니라 <b style="color:var(--ink);font-weight:700;">CSR·ESG 매체, 기업 지속가능경영보고서, 파트너사 보도자료</b>입니다. — 기존 초안엔 이 구분이 없었습니다.
+      </p>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>믿을 만한 실제 근거</h2></div>
+    <p class="sec-sub">이 분야를 실제 데이터로 검증한 거의 유일한 공개 연구의 결론입니다. 이걸 판단 기준으로 삼습니다.</p>
+    <div class="twoup">
+      <div class="ev ok">
+        <div class="mark">✓ 효과 있음</div>
+        <h3>숫자 · 인용 · 출처 넣기</h3>
+        <p>통계 수치와 인용·출처를 붙인 글이 AI 답변에 더 자주 등장했습니다. 일부 분야에서는 약 40% 늘었습니다.</p>
+      </div>
+      <div class="ev no">
+        <div class="mark">✕ 효과 없음 · 역효과</div>
+        <h3>같은 표현 반복하기</h3>
+        <p>특정 표현을 반복해서 깔아두는 방식은 효과가 없거나 오히려 떨어졌습니다. <b>반복할 것은 ‘표현’이 아니라 ‘숫자와 출처’입니다.</b></p>
+      </div>
+    </div>
+    <p class="src">근거: Aggarwal 외, <i>GEO: Generative Engine Optimization</i> (KDD 2024). · 단일 연구라는 한계가 있고, 시중에 도는 다른 조언 상당수는 검증이 약한 업체 마케팅입니다.</p>
+    <p style="margin-top:16px;font-size:14.5px;color:var(--muted);">→ <b style="color:var(--ink);">바로잡을 점:</b> 기존 초안의 “‘해피빈과 공동 기획’ 같은 표현을 반복 노출”은 이 연구가 <b style="color:var(--red-ink);">효과 없다고 본 방식</b>입니다.</p>
+  </section>
+
+  <!-- 3 signature -->
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>효과가 큰 순서로 다시 정리한 우선순위</h2></div>
+    <p class="sec-sub">기존 초안이 ‘결론’으로 삼은 ‘자사 페이지 표현 통일’(⑤)이 사실은 효과가 가장 작습니다. 효과 큰 순서대로 뒤집었습니다.</p>
+    <div class="stack">
+      <div class="lev">
+        <div class="rank">①</div>
+        <div class="title">파트너사 보도자료에 “함께 운영했다” 한 줄 넣기<span>기업·언론의 언급이 우리 페이지보다 더 신뢰받습니다</span></div>
+        <div class="impact"><span class="lab">기대 효과</span><div class="bar"><i style="width:100%"></i></div></div>
+      </div>
+      <div class="lev">
+        <div class="rank">②</div>
+        <div class="title">AI가 참고하는 ‘기관 기본 정보’ 정비하기<span>위키 등에서 해피빈을 ‘기관’으로 인식하게 만드는 토대</span></div>
+        <div class="impact"><span class="lab">기대 효과</span><div class="bar"><i style="width:88%"></i></div></div>
+      </div>
+      <div class="lev">
+        <div class="rank">③</div>
+        <div class="title">성과를 숫자로 보여주는 사례 페이지 만들기<span>AI가 인용하기 쉬운 형태로 성과 수치를 공개</span></div>
+        <div class="impact"><span class="lab">기대 효과</span><div class="bar"><i style="width:64%"></i></div></div>
+      </div>
+      <div class="lev low">
+        <div class="rank">④</div>
+        <div class="title">협업 유형 이름 통일하기 (5가지)<span>우리 페이지가 아니라 ①②의 외부 글에서 같은 이름을 쓸 때 효과</span></div>
+        <div class="impact"><span class="lab">기대 효과</span><div class="bar"><i style="width:42%"></i></div></div>
+      </div>
+      <div class="lev low">
+        <div class="rank">⑤</div>
+        <div class="title">자사 페이지 표현 통일하기<span>안 할 이유는 없지만 우선순위는 가장 낮습니다</span></div>
+        <div class="impact"><span class="lab">기대 효과</span><div class="bar"><i style="width:22%"></i></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 actions -->
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><h2>담당자가 할 일</h2></div>
+    <p class="sec-sub">위 순서대로, 다음 캠페인 시작 때부터 실제로 잡을 수 있는 일입니다.</p>
+
+    <div class="action">
+      <div class="ah"><span class="pill">1순위</span><h3>파트너사 보도자료에 “함께 운영했다” 한 줄 넣기</h3></div>
+      <p>우리가 우리 페이지에 100번 쓰는 것보다, 파트너 기업의 보도자료에 한 줄 들어가는 게 훨씬 강합니다. 보도자료는 여러 뉴스로 퍼지고, 검색과 AI 양쪽에서 우리 자체 페이지보다 더 믿을 만한 정보로 다뤄지기 때문입니다.</p>
+      <ul>
+        <li>캠페인 시작 때 파트너사 홍보팀에 <b>보도자료에 넣을 문구를 먼저 전달</b> — 주어는 기업으로 두고, 해피빈은 “함께 기획·운영” 위치에, 수혜기관 이름을 함께 넣습니다.</li>
+        <li><b>수혜기관(보바스 등)의 홈페이지·연차보고서</b>에도 “해피빈과 함께”가 들어가도록 요청합니다. 비영리기관의 언급은 광고성이 없어 더 신뢰받습니다.</li>
+        <li>롯데정밀화학·LG이노텍·KT&G 건도 지금이라도 이 표현이 들어갔는지 점검해 봅니다.</li>
+      </ul>
+      <div class="quote">
+        “[기업명]은 네이버 해피빈과 <span class="ph">함께 기획·운영</span>한 [캠페인명]을 통해 [수혜기관]의 [프로그램]을 지원했다. [참여자 N명·누적 N원] 규모로 진행됐다.”
+      </div>
+    </div>
+
+    <div class="action">
+      <div class="ah"><span class="pill">2순위</span><h3>AI가 참고하는 ‘기관 기본 정보’ 정비하기</h3></div>
+      <p>AI가 어떤 대상을 ‘기관’으로 보는 근거는 표현을 몇 번 봤는지가 아니라, 여기저기 정리돼 있는 ‘기본 정보’입니다. 팀 차원에서 다음을 점검·정비합니다.</p>
+      <ul>
+        <li><b>위키데이터(Wikidata, 위키 계열 공개 정보DB)</b>: 해피빈 항목에 <b>분류(기부 플랫폼/온라인 모금), 운영 주체(네이버), 설립연도, 국가</b>가 채워져 있는지 확인. 비어 있으면 채웁니다. 검색·AI가 직접 참고하는 정보라 들인 노력 대비 효과가 가장 큽니다.</li>
+        <li><b>한국어 위키백과</b>: ‘플랫폼이자 사회공헌 운영 주체’로 서술돼 있고 믿을 만한 출처가 달려 있는지 확인. 이해관계 때문에 우리가 직접 편집하긴 어려우니, <b>편집자가 인용할 만한 출처(1순위의 보도자료·업계 기사)를 먼저 만들어 두는 것</b>이 현실적인 우회로입니다.</li>
+        <li><b>웹페이지에 ‘여기는 기관 정보’라고 알려주는 표시</b>: 소개·캠페인 페이지에 검색엔진이 읽는 구조화 데이터(schema.org)를 넣습니다. 개발팀 협조가 필요하니 요청을 걸어둡니다.</li>
+      </ul>
+    </div>
+
+    <div class="action">
+      <div class="ah"><span class="pill">3순위</span><h3>성과를 숫자로 보여주는 사례 페이지 만들기</h3></div>
+      <p>‘숫자가 인용을 부른다’(02의 연구)를 우리 자산으로 실행하는 단계입니다. 이미 하고 있는 캠페인 수치 검증 결과를 AI가 뽑아 쓰기 쉬운 형태로 페이지에 정리합니다.</p>
+      <ul>
+        <li>캠페인별 결과 페이지에 <b>참여자 수·누적 기부액·수혜 가족 수·재참여율</b>을 페이지 상단에, 날짜와 함께, 눈에 띄는 제목으로 배치합니다.</li>
+        <li>줄글 문단보다 <b>“지표 : 값”</b> 형태가 AI가 뽑아 쓰기 쉽습니다.</li>
+      </ul>
+    </div>
+
+    <div class="action">
+      <div class="ah"><span class="pill">4순위</span><h3>협업 유형 이름 통일하기</h3></div>
+      <p>5가지 분류(제품판매 연계 · 매칭기부 · 팬 참여 · 공공캠페인 · 지역사회)는 방향은 맞습니다. 다만 효과는 우리 페이지에 카테고리를 만드는 데서가 아니라, <b>1·2순위의 외부 글과 기본 정보에서 같은 이름을 일관되게 쓸 때</b> 나옵니다. → 보도자료 문구에 표준 이름(예: “매칭기부형 캠페인”)을 넣어 둡니다.</p>
+    </div>
+  </section>
+
+  <!-- 5 cut -->
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><h2>초안에서 빼야 할 것</h2></div>
+    <p class="sec-sub">좋아 보이지만 효과가 없거나, 사실은 다른 목표에 속하는 항목입니다.</p>
+    <div class="cut">
+      <div class="cut-item"><b>“같은 표현 반복 노출”</b> <span>— 02의 연구가 효과 없다고 본 방식. 횟수가 아니라 출처·숫자가 작동합니다.</span></div>
+      <div class="cut-item"><b>“기업 문의 동선 단순화”</b> <span>— 좋은 일이지만 이건 문의 전환을 높이는 일이지 AI 노출과는 무관합니다. 이 전략에서는 분리합니다.</span></div>
+      <div class="cut-item"><b>확인 안 된 출처·프로그램 이름</b> <span>— 공식 명칭과 사실 여부를 내부 확인한 뒤 사용합니다.</span></div>
+    </div>
+  </section>
+
+  <!-- 6 measure -->
+  <section>
+    <div class="sec-head"><span class="sec-num">06</span><h2>효과 측정 — 비교표에 꼭 넣을 항목</h2></div>
+    <p class="sec-sub">“Claude는 나오는데 ChatGPT는 안 나온다”는 노출 전략 문제가 아니라, AI가 실시간 검색을 썼는지 차이일 가능성이 큽니다.</p>
+    <div class="measure">
+      <div class="var">
+        <span class="k">검색 사용 여부</span>
+        <span class="v">각 AI 답변이 <b style="color:#fff;">실시간 검색을 썼는지를 따로 칸으로 기록</b>합니다. 검색을 쓴 답(Perplexity, 검색 모드 ChatGPT·Gemini)에서만 1·3순위 같은 단기 조치가 효과를 냅니다. 검색 없이 학습된 지식으로만 답하는 경우엔 단기간에 거의 안 바뀝니다.</span>
+      </div>
+      <div class="var">
+        <span class="k">전 / 후 비교</span>
+        <span class="v"><b style="color:#fff;">조치 전 → 조치 → 조치 후</b> 세 시점으로 봅니다. 지금을 기준값으로 기록해 두고 1·2순위를 실행한 뒤 다시 측정해야, 효과가 그 조치 덕분인지 확인할 수 있습니다.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- next -->
+  <section class="next">
+    <div class="q">다음 단계 — 둘 중 무엇부터 만들까요?</div>
+    <p class="opt"><b>(A)</b> 협업 유형별 <b>보도자료·CSR보고서용 문구 모음</b> (파트너사 홍보팀에 그대로 전달 · 효과 큼)<br>
+    <b>(B)</b> 해피빈 <b>소개문 3종</b> (공식 / 홍보 / 제안서용)</p>
+  </section>
+
+  <footer>
+    내부 검토용 초안 · 외부 공개 전 출처·수치 확인 필요<br>
+    근거: GEO 연구(KDD 2024) + 검색·AI 작동 원리 / 작성 당시 웹 미접속으로 외부 사례 일부 미확인
+  </footer>
+
 </div>
-
-<p class="usage">연한 칸을 클릭하면 바로 입력되고 그 자리에 출력돼요. 점선 박스는 클릭해 이미지를 넣고요. 파란 회색 박스는 <b>교체 안내(주석)</b>라 "주석" 버튼으로 끄면 클라이언트용 화면이 됩니다. <b>GNB·푸터는 고정</b>이라 편집되지 않아요.</p>
-
-<input type="file" id="filePicker" accept="image/*" style="display:none">
-<input type="file" id="jsonPicker" accept="application/json,.json" style="display:none">
-
-<!-- ===== GNB (고정) ===== -->
-<header class="gnb">
-  <div class="container gnb-inner">
-    <div class="gnb-logo"><span class="n">N</span> 해피빈</div>
-    <nav class="gnb-menu"><span>기부</span><span>펀딩</span><span>공감가게</span><span>가볼까</span><span class="on">굿액션</span></nav>
-    <div class="gnb-right"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg> MY</div>
-  </div>
-</header>
-
-<!-- 플로팅 참여수 배지 (스크롤에 따라 오른쪽에 고정) -->
-<div class="counter"><div class="lbl">캠페인 참여 수</div><div><span class="edit" data-key="hero_count" data-ph="00,000"></span><span class="unit">건</span></div></div>
-
-<!-- ===== ② 히어로 ===== -->
-<div class="meta"><span class="tag">② 히어로 배너</span><p class="note">교체: <b>주최기관 · 타이틀 · 키 비주얼 · 참여수</b></p></div>
-<section class="band sky">
-  <div class="container center">
-    <div class="stack-md">
-      <span class="eyebrow editline" data-key="hero_org" data-ph="주최기관명"></span>
-      <div class="h1 edit editblock" data-key="hero_title" data-ph="캠페인 메인 타이틀을 입력하세요"></div>
-      <div class="lead edit editblock" data-key="hero_sub" data-ph="한 줄 서브 카피"></div>
-    </div>
-    <div class="img-slot" data-key="hero_img" style="min-height:230px;margin-top:36px;border-radius:20px;"><button class="rm">✕</button>메인 키 비주얼 / 일러스트 (클릭해 이미지 넣기)</div>
-  </div>
-</section>
-
-<!-- ===== ③ 참여 방식 ===== -->
-<div class="meta"><span class="tag">③ 참여 방식</span><p class="note">질문형 패턴. 교체: 질문·답변·CTA. ※ 댓글/채널연결/투표 등으로 통째 교체 가능.</p></div>
-<section class="band">
-  <div class="container center">
-    <div class="h2 edit editline" data-key="q_section" data-ph="섹션 타이틀 (예: 다음 중 무엇일까요?)"></div>
-    <div style="margin-top:28px;"><div class="bubble"><div class="lead edit editline" data-key="q_question" data-ph="질문 문구를 입력하세요"></div></div></div>
-    <div class="stack-sm" style="max-width:560px;margin:36px auto 0;">
-      <div class="qcard"><div class="ic"></div><div class="lead edit" data-key="q_a1" data-ph="답변 1"></div></div>
-      <div class="qcard"><div class="ic"></div><div class="lead edit" data-key="q_a2" data-ph="답변 2"></div></div>
-      <div class="qcard"><div class="ic"></div><div class="lead edit" data-key="q_a3" data-ph="답변 3"></div></div>
-    </div>
-    <div style="margin-top:36px;"><span class="pill-btn"><span class="edit" data-key="q_cta" data-ph="버튼 문구 (예: 콩 받기)"></span></span></div>
-  </div>
-</section>
-
-<!-- ===== ④ 스토리 ===== -->
-<div class="meta"><span class="tag">④ 스토리</span><p class="note">교체: 헤드라인·서브카피·와이드 일러스트·CTA</p></div>
-<section class="band mint">
-  <div class="container center stack-md">
-    <div class="h2 edit editline" data-key="story_title" data-ph="스토리 헤드라인"></div>
-    <div class="lead edit editline" data-key="story_sub" data-ph="서브 카피"></div>
-    <div class="img-slot" data-key="story_img" style="min-height:240px;"><button class="rm">✕</button>스토리 일러스트 (와이드 · 클릭해 이미지 넣기)</div>
-    <div><span class="pill-btn ghost"><span class="edit" data-key="story_cta" data-ph="버튼 문구"></span></span></div>
-  </div>
-</section>
-
-<!-- ===== ⑤ 채널 안내 ===== -->
-<div class="meta"><span class="tag">⑤ 이용 채널 안내</span><p class="note">3컬럼. 교체: 헤드라인 · 각 카드 제목·설명·CTA</p></div>
-<section class="band skyflat">
-  <div class="container center">
-    <div class="h2 edit editblock" data-key="chan_head" data-ph="섹션 헤드라인 (예: 365일 24시간 언제 어디서나)" style="max-width:640px;margin:0 auto;"></div>
-    <div class="cards-3" style="margin-top:40px;">
-      <div class="chan-card"><div class="ic"></div>
-        <div class="lead edit editline" data-key="chan_t1" data-ph="채널 1 제목" style="font-weight:700;color:var(--ink);"></div>
-        <div class="img-slot" data-key="chan_i1" style="min-height:80px;margin:14px 0;"><button class="rm">✕</button>이미지</div>
-        <div class="lead edit editblock" data-key="chan_d1" data-ph="설명" style="font-size:14px;"></div>
-        <div style="margin-top:16px;"><span class="pill-btn ghost"><span class="edit" data-key="chan_c1" data-ph="CTA"></span></span></div>
-      </div>
-      <div class="chan-card"><div class="ic"></div>
-        <div class="lead edit editline" data-key="chan_t2" data-ph="채널 2 제목" style="font-weight:700;color:var(--ink);"></div>
-        <div class="img-slot" data-key="chan_i2" style="min-height:80px;margin:14px 0;"><button class="rm">✕</button>이미지</div>
-        <div class="lead edit editblock" data-key="chan_d2" data-ph="설명" style="font-size:14px;"></div>
-        <div style="margin-top:16px;"><span class="pill-btn ghost"><span class="edit" data-key="chan_c2" data-ph="CTA"></span></span></div>
-      </div>
-      <div class="chan-card"><div class="ic"></div>
-        <div class="lead edit editline" data-key="chan_t3" data-ph="채널 3 제목" style="font-weight:700;color:var(--ink);"></div>
-        <div class="img-slot" data-key="chan_i3" style="min-height:80px;margin:14px 0;"><button class="rm">✕</button>이미지</div>
-        <div class="lead edit editblock" data-key="chan_d3" data-ph="설명" style="font-size:14px;"></div>
-        <div style="margin-top:16px;"><span class="pill-btn ghost"><span class="edit" data-key="chan_c3" data-ph="CTA"></span></span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== ⑥ SNS ===== -->
-<div class="meta"><span class="tag">⑥ 소식 · SNS</span><p class="note">교체: 한 줄 카피 · SNS 채널</p></div>
-<section class="band tight">
-  <div class="container social-row">
-    <div class="lead edit editline" data-key="sns_copy" data-ph="SNS 안내 카피"></div>
-    <div class="social"></div><div class="social"></div><div class="social"></div>
-  </div>
-</section>
-
-<!-- ===== ⑦ 기부금 ===== -->
-<div class="meta"><span class="tag">⑦ 기부금 안내</span><p class="note">교체: <b>강조 금액</b> · 기부처 설명</p></div>
-<section class="band">
-  <div class="container center stack-md">
-    <div class="lead edit editline" data-key="dona_lead" data-ph="기부금 안내 문구 (앞부분)"></div>
-    <div><span class="amount-wrap"><span class="amount edit" data-key="dona_amount" data-ph="최대 0,000,000원"></span></span></div>
-    <div class="lead edit editline" data-key="dona_desc" data-ph="기부처/매칭 설명"></div>
-    <div><span class="pill-btn ghost"><span class="edit" data-key="dona_cta" data-ph="자세히 보기 링크 문구"></span></span></div>
-  </div>
-</section>
-
-<!-- ===== ⑧ 공유 ===== -->
-<div class="meta"><span class="tag">⑧ 공유하기</span><p class="note">교체: 공유 유도 카피</p></div>
-<section class="band mint tight">
-  <div class="container social-row">
-    <div class="lead edit editline" data-key="share_copy" data-ph="공유 유도 카피"></div>
-    <div class="social"></div><div class="social"></div><div class="social"></div><div class="social"></div>
-  </div>
-</section>
-
-<!-- ===== ⑨ 댓글 참여 ===== -->
-<div class="meta"><span class="tag">⑨ 댓글 참여</span><p class="note">교체: 질문 헤드라인 · 참여 기간/지급일 안내. <b>댓글 컴포넌트는 공통 디자인(고정)</b>.</p></div>
-<section class="band">
-  <div class="container">
-    <div class="center stack-sm" style="margin-bottom:30px;">
-      <div class="h2 edit editline" data-key="cm_title" data-ph="참여 유도 질문 헤드라인"></div>
-      <div class="lead edit editline" data-key="cm_guide" data-ph="참여 기간 · 콩 지급일 안내" style="font-size:14px;color:var(--muted);"></div>
-    </div>
-    <div class="cmt">
-      <div class="cmt-head">총 <b>0</b>개의 댓글</div>
-      <div class="cmt-write">
-        <div class="cmt-input">댓글을 남겨보세요 (로그인 후 작성)</div>
-        <div class="cmt-submit">등록</div>
-      </div>
-      <div class="cmt-item"><div class="av"></div><div class="cb">
-        <div><span class="cmt-name">user****</span><span class="cmt-date">2026.06.08</span></div>
-        <div class="cmt-text">실제 작성된 댓글이 이 영역에 노출됩니다.</div>
-        <div class="cmt-act"><span>답글</span><span>♡ 0</span></div>
-      </div></div>
-      <div class="cmt-item"><div class="av"></div><div class="cb">
-        <div><span class="cmt-name">user****</span><span class="cmt-date">2026.06.08</span></div>
-        <div class="cmt-text">댓글 컴포넌트는 해피빈 공통 디자인이라 그대로 들어갑니다.</div>
-        <div class="cmt-act"><span>답글</span><span>♡ 0</span></div>
-      </div></div>
-      <div class="center" style="margin-top:22px;"><span class="more">댓글 더보기</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== 푸터 (고정) ===== -->
-<footer class="ft">
-  <div class="container">
-    <div><b>해피빈</b> · 공지사항 · 자주 묻는 질문 · 이용약관 · 개인정보처리방침</div>
-    <div style="margin-top:10px;">주식회사 네이버 · 운영기관 정보 · 사업자등록번호 000-00-00000 · 대표 000</div>
-    <div style="margin-top:6px;">Copyright © NAVER Corp. All Rights Reserved.</div>
-  </div>
-</footer>
-
-<script>
-(function(){
-  var $=function(s,c){return (c||document).querySelector(s);};
-  var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
-
-  function refreshEmpty(el){
-    if(el.innerText.replace(/\u200b/g,'').trim()==='') el.classList.add('is-empty');
-    else el.classList.remove('is-empty');
-  }
-  $$('.edit').forEach(function(el){
-    refreshEmpty(el);
-    el.setAttribute('contenteditable','true');
-    el.addEventListener('input',function(){refreshEmpty(el);});
-    el.addEventListener('focus',function(){if(el.classList.contains('is-empty')) el.innerText='';});
-    el.addEventListener('blur',function(){refreshEmpty(el);});
-    el.addEventListener('paste',function(e){
-      e.preventDefault();
-      var t=(e.clipboardData||window.clipboardData).getData('text');
-      document.execCommand('insertText',false,t);
-    });
-  });
-
-  var picker=$('#filePicker'), activeSlot=null;
-  function applyImage(slot,d){slot.style.backgroundImage='url('+d+')';slot.classList.add('filled');slot.dataset.img=d;}
-  function clearImage(slot){slot.style.backgroundImage='';slot.classList.remove('filled');delete slot.dataset.img;}
-  $$('.img-slot').forEach(function(slot){
-    slot.addEventListener('click',function(e){
-      if(e.target.classList.contains('rm')) return;
-      activeSlot=slot; picker.value=''; picker.click();
-    });
-    var rm=$('.rm',slot);
-    if(rm) rm.addEventListener('click',function(e){e.stopPropagation();clearImage(slot);});
-  });
-  picker.addEventListener('change',function(){
-    var f=picker.files[0]; if(!f||!activeSlot) return;
-    var r=new FileReader(); r.onload=function(){applyImage(activeSlot,r.result);}; r.readAsDataURL(f);
-  });
-
-  var on=true, tBtn=$('#annoToggle'), tTxt=$('#toggleText');
-  tBtn.addEventListener('click',function(){
-    on=!on; document.body.classList.toggle('clean',!on);
-    tTxt.textContent= on?'주석 켜짐':'주석 꺼짐 (클라이언트 보기)';
-  });
-
-  function collect(){
-    var d={texts:{},images:{}};
-    $$('.edit').forEach(function(el){ if(!el.classList.contains('is-empty')) d.texts[el.dataset.key]=el.innerText; });
-    $$('.img-slot').forEach(function(s){ if(s.dataset.img) d.images[s.dataset.key]=s.dataset.img; });
-    return d;
-  }
-  function apply(d){
-    if(!d) return;
-    $$('.edit').forEach(function(el){
-      var v=(d.texts||{})[el.dataset.key];
-      el.innerText=(v!=null)?v:''; refreshEmpty(el);
-    });
-    $$('.img-slot').forEach(function(s){
-      var v=(d.images||{})[s.dataset.key];
-      if(v) applyImage(s,v); else clearImage(s);
-    });
-  }
-  $('#saveBtn').addEventListener('click',function(){
-    var blob=new Blob([JSON.stringify(collect(),null,2)],{type:'application/json'});
-    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-    a.download='happybean-campaign.json'; document.body.appendChild(a); a.click(); a.remove();
-  });
-  var jsonPicker=$('#jsonPicker');
-  $('#loadBtn').addEventListener('click',function(){jsonPicker.value='';jsonPicker.click();});
-  jsonPicker.addEventListener('change',function(){
-    var f=jsonPicker.files[0]; if(!f) return;
-    var r=new FileReader(); r.onload=function(){try{apply(JSON.parse(r.result));}catch(e){alert('파일을 읽지 못했어요.');}}; r.readAsText(f);
-  });
-  $('#printBtn').addEventListener('click',function(){window.print();});
-  $('#resetBtn').addEventListener('click',function(){ if(confirm('입력한 내용을 모두 지울까요?')) apply({texts:{},images:{}}); });
-})();
-</script>
 </body>
 </html>
